@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropertyCard from '../components/propertyCard';
 import Navbar from '../components/navbar';
 import AddPropertyModal from '../components/addPropertyModel';
 import UserDetailsModal from '../components/userDetailsModel';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const propertiesData = [
   {
@@ -25,10 +27,20 @@ const propertiesData = [
 ];
 
 const Home = () => {
+
+  const navigate = useNavigate();
+
   const [properties, setProperties] = useState(propertiesData);
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [isUserModalVisible, setUserModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if(!token){
+      navigate("/login");
+    }
+  },[])
 
   const handleLike = (id) => {
     const updatedProperties = properties.map((property) => {
@@ -59,6 +71,8 @@ const Home = () => {
 
   const toggleUserModal = () => {
     setUserModalVisible(!isUserModalVisible);
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
   };
 
   return (
@@ -74,8 +88,8 @@ const Home = () => {
           />
         ))}
       </div>
-      <AddPropertyModal isVisible={isAddModalVisible} onClose={toggleAddModal} onSubmit={handleAddProperty} />
       <UserDetailsModal isVisible={isUserModalVisible} onClose={toggleUserModal} user={selectedUser} />
+      <AddPropertyModal isVisible={isModalVisible} onClose={toggleModal} />
     </>
   );
 };
