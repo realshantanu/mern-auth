@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropertyCard from '../components/propertyCard';
 import Navbar from '../components/navbar';
 import AddPropertyModal from '../components/addPropertyModel';
+import UserDetailsModal from '../components/userDetailsModel';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,6 +17,11 @@ const propertiesData = [
     hospitals: ['City Hospital', 'Downtown Clinic'],
     colleges: ['Downtown College', 'City University'],
     likes: 10,
+    owner: {
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      phone: '+1234567890',
+    },
   },
   // Add more properties as needed
 ];
@@ -25,7 +31,9 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [properties, setProperties] = useState(propertiesData);
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const [isUserModalVisible, setUserModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -46,16 +54,30 @@ const Home = () => {
 
   const handleInterested = (id) => {
     const property = properties.find((property) => property.id === id);
-    alert(`Seller details for property ${property.title}: ${property.place}`);
+    if (property) {
+      setSelectedUser(property.owner);
+      setUserModalVisible(true);
+    }
   };
 
+  const handleAddProperty = (newProperty) => {
+    const newId = properties.length ? properties[properties.length - 1].id + 1 : 1;
+    setProperties([...properties, { ...newProperty, id: newId, likes: 0 }]);
+  };
+
+  const toggleAddModal = () => {
+    setAddModalVisible(!isAddModalVisible);
+  };
+
+  const toggleUserModal = () => {
+    setUserModalVisible(!isUserModalVisible);
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
   return (
     <>
-      <Navbar onAddPropertyClick={toggleModal} />
+      <Navbar onAddPropertyClick={toggleAddModal} />
       <div className="container mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {properties.map((property) => (
           <PropertyCard
@@ -66,6 +88,7 @@ const Home = () => {
           />
         ))}
       </div>
+      <UserDetailsModal isVisible={isUserModalVisible} onClose={toggleUserModal} user={selectedUser} />
       <AddPropertyModal isVisible={isModalVisible} onClose={toggleModal} />
     </>
   );
