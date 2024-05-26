@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropertyCard from '../components/propertyCard';
 import Navbar from '../components/navbar';
 import AddPropertyModal from '../components/addPropertyModel';
+import axios from 'axios';
 
 const propertiesData = [
   {
@@ -37,11 +38,6 @@ const Home = () => {
     alert(`Seller details for property ${property.title}: ${property.place}`);
   };
 
-  const handleAddProperty = (newProperty) => {
-    const newId = properties.length ? properties[properties.length - 1].id + 1 : 1;
-    setProperties([...properties, { ...newProperty, id: newId, likes: 0 }]);
-  };
-
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
@@ -59,7 +55,7 @@ const Home = () => {
           />
         ))}
       </div>
-      <AddPropertyModal isVisible={isModalVisible} onClose={toggleModal} onSubmit={handleAddProperty} />
+      <AddPropertyModal isVisible={isModalVisible} onClose={toggleModal} />
     </>
   );
 };

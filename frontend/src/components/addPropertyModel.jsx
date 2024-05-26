@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const Tag = ({ tag, onRemove }) => (
   <span className="bg-gray-200 text-gray-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded inline-flex items-center">
@@ -19,6 +20,7 @@ const AddPropertyModal = ({ isVisible, onClose, onSubmit }) => {
     hospitals: [],
     colleges: [],
     description: '',
+    rent: '',
   });
 
   const handleChange = (e) => {
@@ -47,9 +49,39 @@ const AddPropertyModal = ({ isVisible, onClose, onSubmit }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e){
     e.preventDefault();
-    onSubmit(formValues);
+    const landmark = JSON.stringify({
+      hospitals: formValues.hospitals,
+      colleges: formValues.colleges
+    })  
+
+    const response = await fetch('http://localhost:5000/api/newRental', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+        owner: "harshalmukundapatil@gmail.com",
+        title: formValues.title,
+        location: formValues.place,
+        area: formValues.area,
+        bedrooms: formValues.bedrooms,
+        bathrooms: formValues.bathrooms,
+        landmark: landmark,
+        rent: formValues.rent
+      })
+		})
+
+		const data = await response.json()
+    
+    if(data.status === 'ok'){
+      alert('Registration successful')
+      // navigate('/login')
+    }else{
+      alert(data.error)
+    }
+
     onClose(); // Close modal after submission
   };
 
@@ -91,6 +123,10 @@ const AddPropertyModal = ({ isVisible, onClose, onSubmit }) => {
               <div className="col-span-2 sm:col-span-1">
                 <label htmlFor="bathrooms" className="block mb-2 text-sm font-medium text-gray-900 :text-white">Bathrooms</label>
                 <input type="number" name="bathrooms" id="bathrooms" value={formValues.bathrooms} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 :bg-gray-600 :border-gray-500 :placeholder-gray-400 :text-white :focus:ring-primary-500 :focus:border-primary-500" placeholder="Number of Bathrooms" required />
+              </div>
+              <div className="col-span-2 sm:col-span-1">
+                <label htmlFor="rent" className="block mb-2 text-sm font-medium text-gray-900 :text-white">rent</label>
+                <input type="number" name="rent" id="rent" value={formValues.rent} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 :bg-gray-600 :border-gray-500 :placeholder-gray-400 :text-white :focus:ring-primary-500 :focus:border-primary-500" placeholder="Rent Amount per month" required />
               </div>
               <div className="col-span-2">
                 <label htmlFor="hospitals" className="block mb-2 text-sm font-medium text-gray-900 :text-white">Nearby Hospitals</label>
