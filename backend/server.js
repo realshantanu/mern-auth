@@ -41,7 +41,7 @@ app.post('/api/newRental', async (req,res) => {
     }
 })
 
-app.get('./api/getRentals', async(req,res) => {
+app.get('/api/getRentals', async(req,res) => {
     try{
         const blogs = await Rental.find({}).sort({createdAt: -1}).limit(10);
         res.json({status:'ok',data:blogs});
@@ -59,7 +59,8 @@ app.post('/api/register', async (req, res) => {
             return res.json({status:'error',error:"User already exists"});
         }
         const newUser = new User({
-            username:req.body.name,
+            firstname:req.body.firstname,
+            lastname:req.body.lastname,
             number:req.body.number,
             email:req.body.email,
             password:req.body.password
