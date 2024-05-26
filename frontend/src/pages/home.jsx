@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropertyCard from '../components/propertyCard';
 import Navbar from '../components/navbar';
 import AddPropertyModal from '../components/addPropertyModel';
+import UserDetailsModal from '../components/userDetailsModel';
 
 const propertiesData = [
   {
@@ -14,13 +15,20 @@ const propertiesData = [
     hospitals: ['City Hospital', 'Downtown Clinic'],
     colleges: ['Downtown College', 'City University'],
     likes: 10,
+    owner: {
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      phone: '+1234567890',
+    },
   },
   // Add more properties as needed
 ];
 
 const Home = () => {
   const [properties, setProperties] = useState(propertiesData);
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const [isUserModalVisible, setUserModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const handleLike = (id) => {
     const updatedProperties = properties.map((property) => {
@@ -34,7 +42,10 @@ const Home = () => {
 
   const handleInterested = (id) => {
     const property = properties.find((property) => property.id === id);
-    alert(`Seller details for property ${property.title}: ${property.place}`);
+    if (property) {
+      setSelectedUser(property.owner);
+      setUserModalVisible(true);
+    }
   };
 
   const handleAddProperty = (newProperty) => {
@@ -42,13 +53,17 @@ const Home = () => {
     setProperties([...properties, { ...newProperty, id: newId, likes: 0 }]);
   };
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
+  const toggleAddModal = () => {
+    setAddModalVisible(!isAddModalVisible);
+  };
+
+  const toggleUserModal = () => {
+    setUserModalVisible(!isUserModalVisible);
   };
 
   return (
     <>
-      <Navbar onAddPropertyClick={toggleModal} />
+      <Navbar onAddPropertyClick={toggleAddModal} />
       <div className="container mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {properties.map((property) => (
           <PropertyCard
@@ -59,7 +74,8 @@ const Home = () => {
           />
         ))}
       </div>
-      <AddPropertyModal isVisible={isModalVisible} onClose={toggleModal} onSubmit={handleAddProperty} />
+      <AddPropertyModal isVisible={isAddModalVisible} onClose={toggleAddModal} onSubmit={handleAddProperty} />
+      <UserDetailsModal isVisible={isUserModalVisible} onClose={toggleUserModal} user={selectedUser} />
     </>
   );
 };
