@@ -8,10 +8,6 @@ const PropertyCard = ({ property, onLike, onInterested }) => {
     onLike(property.id);
   };
 
-  const handleInterested = () => {
-    onInterested(property.id);
-  };
-
   return (
     <div className="max-w-sm rounded-lg overflow-hidden shadow-lg p-4 bg-white">
       <img
@@ -39,7 +35,7 @@ const PropertyCard = ({ property, onLike, onInterested }) => {
             <strong>Nearby Hospitals:</strong>
           </p>
           <ul className="list-disc list-inside">
-            {property.hospitals.map((hospital, index) => (
+            {property.landmark.hospitals.map((hospital, index) => (
               <li key={index} className="text-gray-700 text-base">
                 {hospital}
               </li>
@@ -52,7 +48,7 @@ const PropertyCard = ({ property, onLike, onInterested }) => {
             <strong>Nearby Colleges:</strong>
           </p>
           <ul className="list-disc list-inside">
-            {property.colleges.map((college, index) => (
+            {property.landmark.colleges.map((college, index) => (
               <li key={index} className="text-gray-700 text-base">
                 {college}
               </li>

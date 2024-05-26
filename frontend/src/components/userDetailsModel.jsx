@@ -29,7 +29,7 @@ const UserDetailsModal = ({ isVisible, onClose, user }) => {
         </div>
         <div className="mt-4">
           <p className="text-lg font-semibold text-gray-700">
-            Owner: {user.name}
+            Owner: {user.firstname + " " + user.lastname}
           </p>
           <div className="flex items-center mt-2">
             <svg
