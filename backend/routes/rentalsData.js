@@ -3,8 +3,9 @@ const router = express.Router();
 
 const User = require('../models/User');
 const Rental = require('../models/Rental');
+const auth = require("../middleware/auth");
 
-router.post('/newRental', async (req,res) => {
+router.post('/newRental', auth, async (req,res) => {
     try{
         console.log(req.body);
         const Place = new Rental({

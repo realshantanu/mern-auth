@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropertyCard from '../components/propertyCard';
 import Navbar from '../components/navbar';
 import AddPropertyModal from '../components/addPropertyModel';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const propertiesData = [
   {
@@ -20,8 +21,18 @@ const propertiesData = [
 ];
 
 const Home = () => {
+
+  const navigate = useNavigate();
+
   const [properties, setProperties] = useState(propertiesData);
   const [isModalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if(!token){
+      navigate("/login");
+    }
+  },[])
 
   const handleLike = (id) => {
     const updatedProperties = properties.map((property) => {

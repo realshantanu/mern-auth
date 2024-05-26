@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+
 
 const Tag = ({ tag, onRemove }) => (
   <span className="bg-gray-200 text-gray-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded inline-flex items-center">
@@ -11,6 +13,9 @@ const Tag = ({ tag, onRemove }) => (
 );
 
 const AddPropertyModal = ({ isVisible, onClose, onSubmit }) => {
+
+  const navigate = useNavigate();
+
   const [formValues, setFormValues] = useState({
     title: '',
     place: '',
@@ -60,6 +65,7 @@ const AddPropertyModal = ({ isVisible, onClose, onSubmit }) => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+        'x-auth-token': localStorage.getItem('token')
 			},
 			body: JSON.stringify({
         owner: "harshalmukundapatil@gmail.com",
@@ -79,7 +85,11 @@ const AddPropertyModal = ({ isVisible, onClose, onSubmit }) => {
       alert('Registration successful')
       // navigate('/login')
     }else{
-      alert(data.error)
+      if(data.error == "1001"){
+        navigate("/login")
+      }else{
+        alert(data.error)
+      }
     }
 
     onClose(); // Close modal after submission
