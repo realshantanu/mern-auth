@@ -1,15 +1,20 @@
 const express = require('express')
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
 const Rental = require('../models/Rental');
 const auth = require("../middleware/auth");
 
 router.post('/newRental', auth, async (req,res) => {
+    const token = req.headers['x-auth-token'];
+    const decoded = jwt.verify(token, process.env.JWTSECRET);
+    const userEmail = decoded.email;
+
     try{
         console.log(req.body);
         const Place = new Rental({
-            owner:req.body.owner,
+            owner:userEmail,
             title:req.body.title,
             location:req.body.location,
             area:req.body.area,

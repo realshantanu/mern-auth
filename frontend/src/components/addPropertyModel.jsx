@@ -68,7 +68,7 @@ const AddPropertyModal = ({ isVisible, onClose, onSubmit }) => {
         'x-auth-token': localStorage.getItem('token')
 			},
 			body: JSON.stringify({
-        owner: "harshalmukundapatil@gmail.com",
+        // owner: "harshalmukundapatil@gmail.com",
         title: formValues.title,
         location: formValues.place,
         area: formValues.area,
