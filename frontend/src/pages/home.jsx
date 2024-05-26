@@ -450,9 +450,7 @@ const Home = () => {
 
   const toggleUserModal = () => {
     setUserModalVisible(!isUserModalVisible);
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
+  }
 
   const toggleFilterModal = () => {
     setFilterModalVisible(!isFilterModalVisible);
@@ -473,6 +471,8 @@ const Home = () => {
       </div>
       <UserDetailsModal isVisible={isUserModalVisible} onClose={toggleUserModal} user={selectedUser} />
       <FilterModal isVisible={isFilterModalVisible} onClose={toggleFilterModal} onFilter={handleFilter} />
+      <AddPropertyModal isVisible={isAddModalVisible} onClose={toggleAddModal} />
+      
     </>
   );
 };
