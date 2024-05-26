@@ -1,6 +1,36 @@
 import React, { useState } from 'react';
 
 const Register = () => {
+
+
+  async function handleSubmit(event) {
+		event.preventDefault()
+
+		const response = await fetch('http://localhost:5000/api/register', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				firstname: formData.firstName,
+        lastname: formData.lastName,
+        email: formData.email,
+        number: formData.phoneNumber,
+        password: formData.password,
+			}),
+		})
+
+		const data = await response.json()
+    
+    if(data.status === 'ok'){
+      alert('Registration successful')
+      // navigate('/login')
+    }else{
+      alert(data.error)
+    }
+
+	}
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -16,12 +46,6 @@ const Register = () => {
       ...prevState,
       [name]: value
     }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission, e.g., send data to backend
-    console.log(formData);
   };
 
   return (
