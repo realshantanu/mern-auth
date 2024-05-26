@@ -1,14 +1,20 @@
 const express = require('express')
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
 const Rental = require('../models/Rental');
+const auth = require("../middleware/auth");
 
-router.post('/newRental', async (req,res) => {
+router.post('/newRental', auth, async (req,res) => {
+    const token = req.headers['x-auth-token'];
+    const decoded = jwt.verify(token, process.env.JWTSECRET);
+    const userEmail = decoded.email;
+
     try{
         console.log(req.body);
         const Place = new Rental({
-            owner:req.body.owner,
+            owner:userEmail,
             title:req.body.title,
             location:req.body.location,
             area:req.body.area,
@@ -28,7 +34,40 @@ router.post('/newRental', async (req,res) => {
 
 router.get('/getRentals', async(req,res) => {
     try{
-        const blogs = await Rental.find({}).sort({createdAt: -1}).limit(10);
+        const blogs = await Rental.aggregate([
+            {
+                $lookup: {
+                    from: 'users-mern',
+                    localField: 'owner',
+                    foreignField: 'email', 
+                    as: 'ownerDetails'
+                }
+            },
+            {
+                $addFields: {
+                    ownerDetails: {
+                        $map: {
+                            input: '$ownerDetails',
+                            as: 'ownerDetail',
+                            in: {
+                                _id: '$$ownerDetail._id',
+                                firstname: '$$ownerDetail.firstname',
+                                lastname: '$$ownerDetail.lastname',
+                                email: '$$ownerDetail.email',
+                                number: '$$ownerDetail.number'
+                                // Exclude password here
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                $sort: { createdAt: -1 } // Sort by creation date in descending order
+            },
+            {
+                $limit: 10 // Limit the number of documents to 10
+            }
+        ]);
         res.json({status:'ok',data:blogs});
     }catch(err){
         console.log(err)
