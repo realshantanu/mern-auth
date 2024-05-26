@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropertyCard from '../components/propertyCard';
 import Navbar from '../components/navbar';
+import AddPropertyModal from '../components/addPropertyModel';
 
 const propertiesData = [
   {
@@ -19,6 +20,7 @@ const propertiesData = [
 
 const Home = () => {
   const [properties, setProperties] = useState(propertiesData);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const handleLike = (id) => {
     const updatedProperties = properties.map((property) => {
@@ -32,13 +34,21 @@ const Home = () => {
 
   const handleInterested = (id) => {
     const property = properties.find((property) => property.id === id);
-    // Implement the functionality to show seller details and send email
     alert(`Seller details for property ${property.title}: ${property.place}`);
+  };
+
+  const handleAddProperty = (newProperty) => {
+    const newId = properties.length ? properties[properties.length - 1].id + 1 : 1;
+    setProperties([...properties, { ...newProperty, id: newId, likes: 0 }]);
+  };
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
   };
 
   return (
     <>
-      <Navbar />
+      <Navbar onAddPropertyClick={toggleModal} />
       <div className="container mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {properties.map((property) => (
           <PropertyCard
@@ -49,6 +59,7 @@ const Home = () => {
           />
         ))}
       </div>
+      <AddPropertyModal isVisible={isModalVisible} onClose={toggleModal} onSubmit={handleAddProperty} />
     </>
   );
 };
